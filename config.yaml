@@ -1,0 +1,21 @@
+username: concreteentree
+chat_message:
+  - key: W
+    duration: 2
+    message: 
+    - forward
+    - up
+    - go
+    - move
+  - key: D
+    duration: 0.2
+    message: left
+  - key: A
+    duration: 0.2
+    message: right
+  - key: S
+    duration: 0.2
+    message: 
+    - reverse
+    - back
+    - retreat
