@@ -1,6 +1,9 @@
 package main
 
-import "go.uber.org/zap"
+import (
+	"github.com/lleadbet/chat-controller/twitch"
+	"go.uber.org/zap"
+)
 
 func main() {
 	config := zap.NewProductionConfig()
@@ -10,5 +13,5 @@ func main() {
 
 	logger.Info("Starting up chat controller...")
 
-	ChatReader(logger)
+	twitch.ChatReader(logger)
 }

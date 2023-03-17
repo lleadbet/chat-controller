@@ -1,4 +1,4 @@
-package main
+package twitch
 
 import (
 	"errors"
@@ -14,12 +14,13 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/gempir/go-twitch-irc/v4"
+	"github.com/lleadbet/chat-controller/config"
 	"github.com/micmonay/keybd_event"
 	"go.uber.org/zap"
 )
 
 // a message key maps to one or more key presses
-var messageMap = make(map[string]*ChatMessageConfig)
+var messageMap = make(map[string]*config.ChatMessageConfig)
 
 func ChatReader(logger *zap.Logger) {
 	kb, err := keybd_event.NewKeyBonding()
@@ -38,7 +39,7 @@ func ChatReader(logger *zap.Logger) {
 
 	go watcherFunc(logger, watcher)
 	go watcher.Add("config.yaml")
-	config, err := NewConfig(logger)
+	config, err := config.NewConfig(logger)
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
@@ -97,8 +98,8 @@ func ChatReader(logger *zap.Logger) {
 	fmt.Println("Thanks for using this tool!")
 }
 
-func configUpdate(logger *zap.Logger, c *Config) error {
-	messageMap = map[string]*ChatMessageConfig{}
+func configUpdate(logger *zap.Logger, c *config.Config) error {
+	messageMap = map[string]*config.ChatMessageConfig{}
 	for _, cm := range c.ChatMessage {
 		for _, message := range cm.Message {
 			if messageMap[message] != nil {
@@ -113,7 +114,7 @@ func configUpdate(logger *zap.Logger, c *Config) error {
 					return errors.New(fmt.Sprintf("Invalid key provided %v", key))
 				}
 			}
-			messageMap[message] = &ChatMessageConfig{Key: cm.Key, Duration: cm.Duration}
+			messageMap[message] = &config.ChatMessageConfig{Key: cm.Key, Duration: cm.Duration}
 		}
 	}
 	return nil
@@ -131,7 +132,7 @@ func watcherFunc(logger *zap.Logger, watcher *fsnotify.Watcher) {
 		// Callback we run.
 		printEvent = func(e fsnotify.Event) {
 			logger.Info("Configuration updated")
-			config, err := NewConfig(logger)
+			config, err := config.NewConfig(logger)
 			if err != nil {
 				logger.Error(err.Error())
 				return

@@ -1,0 +1,36 @@
+before:
+  hooks:
+    - go mod download
+builds:
+  - id: chat-controller-windows-x64
+    ldflags: 
+    - -s -w
+    binary: chat-controller
+    main: ./main.go
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    goos:
+      - windows
+    goarch:
+      - amd64
+archives:
+  - replacements:
+      windows: Windows
+    format_overrides:
+    - goos: windows
+      format: zip
+    wrap_in_directory: "true"
+    files:
+      - LICENSE
+      - README.md
+      - config.yaml
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

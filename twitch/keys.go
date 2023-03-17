@@ -1,4 +1,4 @@
-package main
+package twitch
 
 import "github.com/micmonay/keybd_event"
 
